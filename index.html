@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>インタビュー｜発音メソッドのはなし（R1）</title>
+<style>
+  :root {
+    --bg: #FAF7F1;
+    --surface: #FFFFFF;
+    --ink: #2B2622;
+    --ink-2: #7A7168;
+    --line: #E8E1D6;
+    --accent: #B5453E;        /* 録音・主アクション（오방 赤） */
+    --accent-soft: #F7E9E7;
+    --calm: #33569E;          /* 청 — インタビュアーの声 */
+    --sd1:#2E5FA3; --sd2:#C4413C; --sd3:#E0AE38; --sd4:#3E8E5A; --sd5:#8A5CA8;
+    --serif: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    --sans: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic Medium", Meiryo, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #171512; --surface: #211E1A; --ink: #ECE7DF; --ink-2: #A79D91; --line: #37322B;
+      --accent: #D96C63; --accent-soft: #3A2422; --calm: #8AA6E0;
+      --sd1:#5B84C9; --sd2:#D4655F; --sd3:#D9B45C; --sd4:#5FAE7D; --sd5:#A57EC4;
+    }
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: var(--sans); font-size: 16px; line-height: 1.9;
+    display: flex; flex-direction: column;
+  }
+  .stripe { height: 4px; flex: none;
+    background: linear-gradient(90deg, var(--sd1) 0 20%, var(--sd2) 20% 40%, var(--sd3) 40% 60%, var(--sd4) 60% 80%, var(--sd5) 80% 100%); }
+  main { flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 20px 22px 40px; display: flex; flex-direction: column; }
+
+  /* 進捗 */
+  .progress { display: flex; align-items: center; gap: 12px; margin: 6px 0 26px; }
+  .progress .bar { flex: 1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
+  .progress .bar i { display: block; height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--sd1), var(--sd4)); transition: width .5s ease; }
+  .progress .label { font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* インタビュアー */
+  .interviewer { display: flex; gap: 14px; align-items: flex-start; }
+  .orb { flex: none; width: 40px; height: 40px; border-radius: 50%; margin-top: 8px;
+    background: radial-gradient(circle at 35% 30%, var(--calm), color-mix(in srgb, var(--calm) 60%, var(--ink)));
+    position: relative; }
+  .orb::after { content:""; position:absolute; inset:-6px; border-radius:50%;
+    border: 2px solid color-mix(in srgb, var(--calm) 45%, transparent); opacity: 0; }
+  .orb.speaking::after { animation: pulse 1.6s ease-out infinite; }
+  @keyframes pulse { 0% { transform: scale(.85); opacity:.9; } 100% { transform: scale(1.25); opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .orb.speaking::after { animation: none; opacity:.5; } }
+
+  .qtext {
+    font-family: var(--serif); font-size: 21px; line-height: 1.95; font-weight: 500;
+    margin: 0; text-wrap: balance; min-height: 3em;
+  }
+  .qsub { font-size: 13.5px; color: var(--ink-2); margin-top: 8px; }
+  .replay { background: none; border: none; color: var(--calm); font-size: 13px; padding: 4px 0; cursor: pointer; font-family: var(--sans); }
+
+  /* 回答エリア */
+  .answer-zone { margin-top: auto; padding-top: 28px; }
+  .transcript {
+    width: 100%; min-height: 110px; max-height: 34vh; overflow-y: auto;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; font-family: var(--sans); font-size: 16px; line-height: 1.9; color: var(--ink);
+    resize: none; display: none;
+  }
+  .transcript:focus { outline: 2px solid var(--calm); border-color: transparent; }
+  .transcript.show { display: block; }
+  .interim { color: var(--ink-2); }
+
+  .controls { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 18px; }
+  .mic {
+    width: 84px; height: 84px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--accent); color: #fff; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 40%, transparent);
+    transition: transform .15s ease;
+  }
+  .mic:active { transform: scale(.94); }
+  .mic svg { width: 34px; height: 34px; fill: #fff; }
+  .mic.rec::before { content:""; position:absolute; inset:-9px; border-radius:50%;
+    border: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); animation: pulse 1.2s ease-out infinite; }
+  @media (prefers-reduced-motion: reduce) { .mic.rec::before { animation: none; opacity:.6; } }
+  .mic-hint { font-size: 13.5px; color: var(--ink-2); }
+
+  .actions { display: none; gap: 10px; margin-top: 16px; }
+  .actions.show { display: flex; flex-wrap: wrap; justify-content: center; }
+  .btn {
+    font-family: var(--sans); font-size: 15px; font-weight: 600; cursor: pointer;
+    border-radius: 999px; padding: 12px 22px; border: 1.5px solid var(--line);
+    background: var(--surface); color: var(--ink);
+  }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:disabled { opacity: .5; cursor: default; }
+  .skip { background: none; border: none; color: var(--ink-2); font-size: 13px; cursor: pointer;
+    font-family: var(--sans); margin-top: 14px; text-decoration: underline; text-underline-offset: 3px; }
+
+  /* イントロ / エンド */
+  .center { margin: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .center h1 { font-family: var(--serif); font-size: 26px; font-weight: 600; line-height: 1.7; margin: 18px 0 4px; text-wrap: balance; }
+  .center p { color: var(--ink-2); font-size: 15px; max-width: 30em; margin: 4px 0; }
+  .big { margin-top: 26px; font-size: 17px; padding: 16px 40px; }
+  .note { font-size: 12.5px; color: var(--ink-2); margin-top: 20px; }
+
+  footer { flex: none; text-align: center; font-size: 11.5px; color: var(--ink-2); padding: 10px 20px 16px; }
+  :focus-visible { outline: 2px solid var(--calm); outline-offset: 2px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="stripe"></div>
+<main>
+
+  <!-- イントロ -->
+  <section id="intro" class="center">
+    <div class="orb" style="width:56px;height:56px;"></div>
+    <h1>イ・スンソン先生、<br>今日はお話を聞かせてください。</h1>
+    <p>テーマは「発音メソッド」。質問は7つです。<br>声が質問を読み上げますので、<b>赤いボタンを押して、話すように</b>答えてください。</p>
+    <p>きれいに話す必要はまったくありません。思い出話をするつもりで。疲れたら途中で閉じても、続きから再開できます。</p>
+    <button id="startBtn" class="btn primary big">インタビューを始める</button>
+    <p class="note">マイクの使用許可を求められたら「許可」を押してください。</p>
+  </section>
+
+  <!-- インタビュー -->
+  <section id="stage" class="hidden" style="display:flex; flex-direction:column; flex:1;">
+    <div class="progress">
+      <span class="label" id="plabel">1 / 7</span>
+      <div class="bar"><i id="pbar"></i></div>
+    </div>
+    <div class="interviewer">
+      <div class="orb" id="orb"></div>
+      <div>
+        <p class="qtext" id="qtext"></p>
+        <p class="qsub" id="qsub"></p>
+        <button class="replay" id="replayBtn">🔊 もう一度聞く</button>
+      </div>
+    </div>
+    <div class="answer-zone">
+      <textarea class="transcript" id="transcript" placeholder="ここに話した内容が文字になります（手で直してもOK）"></textarea>
+      <div class="controls">
+        <button class="mic" id="micBtn" aria-label="話す">
+          <svg viewBox="0 0 24 24"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.94V22h2v-2.56A8 8 0 0 0 20 11.5h-2Z"/></svg>
+        </button>
+        <span class="mic-hint" id="micHint">ボタンを押して話す</span>
+      </div>
+      <div class="actions" id="actions">
+        <button class="btn" id="retryBtn">録り直す</button>
+        <button class="btn primary" id="sendBtn">これで送る</button>
+      </div>
+      <div style="text-align:center;"><button class="skip" id="skipBtn">この質問は飛ばす</button></div>
+    </div>
+  </section>
+
+  <!-- エンド -->
+  <section id="outro" class="center hidden">
+    <div class="orb" style="width:56px;height:56px;"></div>
+    <h1>今日はありがとうございました。</h1>
+    <p id="outroMsg">お話はすべて金さんに届いています。<br>いただいたお話は記事の形に整えて、必ず先生に確認していただいてから公開します。</p>
+    <p class="note" id="sentStat"></p>
+    <button class="btn hidden" id="copyBtn">回答のコピーを取る（念のため）</button>
+  </section>
+
+</main>
+<footer>セットン韓国語教室 代表インタビュー R1｜発音メソッド（その1）</footer>
+
+<script>
+const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
+const ROUND = "R1";
+const QUESTIONS = [
+  { q:"最初の質問です。「発音は才能ではなく、手順で教えられる」——先生がそう確信した、いちばん最初の瞬間はいつでしたか？",
+    sub:"特定の生徒さんとのやりとりがあれば、その場面（いつ頃・どんな生徒さん・何があったか）を聞かせてください。" },
+  { q:"「딸기（いちご）が通じない」というお話がメモにありました。実際にそういう場面を見たり聞いたりしたのは、いつ、どんな状況でしたか？",
+    sub:"" },
+  { q:"カタカナのルビ、「タルギ」で覚えてきた生徒さんを教えたときの話を聞かせてください。最初はどんな発音で、どうやって直していきましたか？",
+    sub:"発音が直った瞬間の、生徒さんの反応や表情も思い出せたらぜひ。" },
+  { q:"「舌の位置」や「口の形」で教える方法は、どうやって編み出したんですか？",
+    sub:"参考にした本や先生はいましたか？ 試行錯誤や、うまくいかなかった教え方の話も聞きたいです。" },
+  { q:"ㄹ、ㅂ、ㄱ のパッチムのうち、日本の方がいちばん苦労するのはどれですか？ それを教えるときの「いつもの手順」を、初めて聞く人に説明するつもりで話してください。",
+    sub:"" },
+  { q:"発音が直ると、生徒さんの韓国語は、ほかに何が変わりますか？",
+    sub:"聞き取り、自信、会話——印象に残っている「変わった生徒さん」のエピソードがあれば。" },
+  { q:"最後です。このテーマについて、ほかに思い出す話や、言っておきたいことがあれば、何でもどうぞ。",
+    sub:"どんな小さな話でも、次のインタビューの種になります。" },
+];
+const ACKS = [
+  "ありがとうございます。",
+  "なるほど、そうだったんですね。ありがとうございます。",
+  "いいお話ですね。ありがとうございます。",
+  "ありがとうございます。目に浮かぶようです。",
+];
+
+const store = {
+  get k() { return "interview-" + ROUND; },
+  load() { try { return JSON.parse(localStorage.getItem(this.k)) || {}; } catch(e){ return {}; } },
+  save(s) { localStorage.setItem(this.k, JSON.stringify(s)); },
+};
+let state = Object.assign({ session: ROUND + "-" + Math.random().toString(36).slice(2,7), idx: 0, answers: [] }, store.load());
+
+const $ = id => document.getElementById(id);
+const intro=$("intro"), stage=$("stage"), outro=$("outro"), orb=$("orb"),
+  qtext=$("qtext"), qsub=$("qsub"), transcript=$("transcript"), micBtn=$("micBtn"),
+  micHint=$("micHint"), actions=$("actions"), plabel=$("plabel"), pbar=$("pbar");
+
+/* ---------- 音声合成 ---------- */
+let jaVoice = null;
+function pickVoice() {
+  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("ja"));
+  jaVoice = vs.find(v => /Kyoko|O-Ren|Google/.test(v.name)) || vs[0] || null;
+}
+if ("speechSynthesis" in window) {
+  pickVoice();
+  speechSynthesis.onvoiceschanged = pickVoice;
+}
+function speak(text, onend) {
+  if (!("speechSynthesis" in window)) { onend && onend(); return; }
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "ja-JP"; if (jaVoice) u.voice = jaVoice;
+  u.rate = 0.95; u.pitch = 1.0;
+  orb.classList.add("speaking");
+  u.onend = u.onerror = () => { orb.classList.remove("speaking"); onend && onend(); };
+  speechSynthesis.speak(u);
+}
+
+/* ---------- 音声認識 ---------- */
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+let rec = null, recording = false, finalText = "";
+function startRec() {
+  if (!SR) { // 非対応: キーボード（音声入力キー）で
+    transcript.classList.add("show"); transcript.focus();
+    micHint.textContent = "この端末では、キーボードのマイクキーで音声入力してください";
+    showActions(); return;
+  }
+  speechSynthesis.cancel();
+  finalText = transcript.value ? transcript.value + " " : "";
+  rec = new SR();
+  rec.lang = "ja-JP"; rec.continuous = true; rec.interimResults = true;
+  rec.onresult = e => {
+    let interim = "";
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const t = e.results[i][0].transcript;
+      if (e.results[i].isFinal) finalText += t; else interim += t;
+    }
+    transcript.value = finalText + interim;
+    transcript.scrollTop = transcript.scrollHeight;
+  };
+  rec.onend = () => { if (recording) { try { rec.start(); } catch(e){} } };
+  rec.onerror = ev => {
+    if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
+      recording = false; setRecUI(false);
+      micHint.textContent = "マイクが使えないため、下の枠にキーボードで入力してください";
+      transcript.classList.add("show"); showActions();
+    }
+  };
+  try { rec.start(); } catch(e){}
+  recording = true; setRecUI(true);
+  transcript.classList.add("show");
+}
+function stopRec() {
+  recording = false;
+  if (rec) { try { rec.stop(); } catch(e){} }
+  setRecUI(false);
+  if (transcript.value.trim()) showActions();
+}
+function setRecUI(on) {
+  micBtn.classList.toggle("rec", on);
+  micHint.textContent = on ? "話し終わったら、もう一度ボタンを押してください" : "ボタンを押して話す";
+}
+function showActions(){ actions.classList.add("show"); }
+function hideActions(){ actions.classList.remove("show"); }
+
+/* ---------- 送信 ---------- */
+function send(qindex, question, answer) {
+  const body = new URLSearchParams({
+    session: state.session, round: ROUND, qindex: String(qindex),
+    question, answer, ts: new Date().toISOString(),
+  });
+  return fetch(WEBHOOK, { method: "POST", mode: "no-cors",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" }, body })
+    .then(() => true).catch(() => false);
+}
+
+/* ---------- 進行 ---------- */
+function showQuestion(speakIt = true) {
+  const i = state.idx;
+  if (i >= QUESTIONS.length) return finish();
+  plabel.textContent = (i+1) + " / " + QUESTIONS.length;
+  pbar.style.width = (i / QUESTIONS.length * 100) + "%";
+  qtext.textContent = QUESTIONS[i].q;
+  qsub.textContent = QUESTIONS[i].sub;
+  transcript.value = ""; transcript.classList.remove("show");
+  hideActions(); setRecUI(false); recording = false;
+  if (speakIt) speak(QUESTIONS[i].q + (QUESTIONS[i].sub ? " " + QUESTIONS[i].sub : ""));
+}
+function advance(ackIt) {
+  const done = () => { state.idx++; store.save(state); showQuestion(true); };
+  if (ackIt) {
+    const ack = ACKS[state.idx % ACKS.length];
+    qtext.textContent = ack; qsub.textContent = ""; transcript.classList.remove("show"); hideActions();
+    speak(ack, () => setTimeout(done, 500));
+  } else done();
+}
+function finish() {
+  stage.classList.add("hidden"); outro.classList.remove("hidden");
+  pbar.style.width = "100%";
+  const sent = state.answers.filter(a => a.sent).length;
+  $("sentStat").textContent = "送信済み: " + sent + " / " + state.answers.length + " 件";
+  if (state.answers.some(a => !a.sent)) $("copyBtn").classList.remove("hidden");
+  speak("今日は、ありがとうございました。とてもいいお話が聞けました。ゆっくり休んでください。");
+}
+
+/* ---------- イベント ---------- */
+$("startBtn").onclick = () => {
+  intro.classList.add("hidden"); stage.classList.remove("hidden");
+  if (state.idx > 0 && state.idx < QUESTIONS.length) {
+    speak("おかえりなさい。続きから始めましょう。", () => showQuestion(true));
+    showQuestion(false);
+  } else if (state.idx >= QUESTIONS.length) { finish(); }
+  else {
+    speak("それでは、始めます。", () => showQuestion(true));
+    showQuestion(false);
+  }
+};
+micBtn.onclick = () => recording ? stopRec() : startRec();
+$("replayBtn").onclick = () => speak(QUESTIONS[state.idx].q + (QUESTIONS[state.idx].sub ? " " + QUESTIONS[state.idx].sub : ""));
+$("retryBtn").onclick = () => { transcript.value = ""; finalText = ""; hideActions(); startRec(); };
+$("sendBtn").onclick = async () => {
+  const ans = transcript.value.trim(); if (!ans) return;
+  $("sendBtn").disabled = true;
+  const i = state.idx;
+  const ok = await send(i, QUESTIONS[i].q, ans);
+  state.answers.push({ qindex: i, answer: ans, sent: ok });
+  store.save(state);
+  $("sendBtn").disabled = false;
+  advance(true);
+};
+$("skipBtn").onclick = () => {
+  if (recording) stopRec();
+  state.answers.push({ qindex: state.idx, answer: "(スキップ)", sent: true });
+  advance(false);
+};
+$("copyBtn").onclick = () => {
+  const txt = state.answers.map(a => "Q" + (a.qindex+1) + ": " + QUESTIONS[a.qindex].q + "\nA: " + a.answer).join("\n\n");
+  navigator.clipboard.writeText(txt).then(() => $("copyBtn").textContent = "コピーしました ✓");
+};
+</script>
+</body>
+</html>
