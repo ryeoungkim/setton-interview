@@ -200,6 +200,10 @@ const store = {
   load() { try { return JSON.parse(localStorage.getItem(this.k)) || {}; } catch(e){ return {}; } },
   save(s) { localStorage.setItem(this.k, JSON.stringify(s)); },
 };
+if (new URLSearchParams(location.search).has("reset")) {
+  localStorage.removeItem("interview-" + ROUND);
+  history.replaceState(null, "", location.pathname);
+}
 let state = Object.assign({ session: ROUND + "-" + Math.random().toString(36).slice(2,7), idx: 0, answers: [] }, store.load());
 
 const $ = id => document.getElementById(id);
