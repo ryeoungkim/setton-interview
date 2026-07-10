@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>インタビュー｜発音メソッドのはなし（R1）</title>
+<title>インタビュー｜発音メソッドのはなし（R2）</title>
 <style>
   :root {
     --bg: #FAF7F1;
@@ -88,6 +88,10 @@
     border: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); animation: pulse 1.2s ease-out infinite; }
   @media (prefers-reduced-motion: reduce) { .mic.rec::before { animation: none; opacity:.6; } }
   .mic-hint { font-size: 13.5px; color: var(--ink-2); }
+  .mic-hint.rec { color: var(--accent); font-weight: 700; }
+  .mic-hint.rec::before { content:"●"; margin-right: 6px; animation: blink 1.2s ease-in-out infinite; }
+  @keyframes blink { 50% { opacity: .25; } }
+  @media (prefers-reduced-motion: reduce) { .mic-hint.rec::before { animation: none; } }
 
   .actions { display: none; gap: 10px; margin-top: 16px; }
   .actions.show { display: flex; flex-wrap: wrap; justify-content: center; }
@@ -143,7 +147,7 @@
     </div>
     <div class="answer-zone">
       <textarea class="transcript" id="transcript" placeholder="ここに話した内容が文字になります（手で直してもOK）"></textarea>
-      <div class="controls">
+      <div class="controls" id="controls">
         <button class="mic" id="micBtn" aria-label="話す">
           <svg viewBox="0 0 24 24"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.94V22h2v-2.56A8 8 0 0 0 20 11.5h-2Z"/></svg>
         </button>
@@ -153,14 +157,18 @@
         <button class="btn" id="retryBtn">録り直す</button>
         <button class="btn primary" id="sendBtn">これで送る</button>
       </div>
-      <div style="text-align:center;"><button class="skip" id="skipBtn">この質問は飛ばす</button></div>
+      <div class="actions" id="pauseChoice">
+        <button class="btn" id="pauseBtn">保存して終了（次回はここから）</button>
+        <button class="btn primary" id="nextBtn">次の質問へ</button>
+      </div>
+      <div style="text-align:center;" id="skipWrap"><button class="skip" id="skipBtn">この質問は飛ばす</button></div>
     </div>
   </section>
 
   <!-- エンド -->
   <section id="outro" class="center hidden">
     <div class="orb" style="width:56px;height:56px;"></div>
-    <h1>今日はありがとうございました。</h1>
+    <h1 id="outroH1">今日はありがとうございました。</h1>
     <p id="outroMsg">お話はすべて金さんに届いています。<br>いただいたお話は記事の形に整えて、必ず先生に確認していただいてから公開します。</p>
     <p class="note" id="sentStat"></p>
     <button class="btn hidden" id="copyBtn">回答のコピーを取る（念のため）</button>
@@ -234,6 +242,8 @@ function speak(text, onend) {
 
 /* ---------- 音声認識 ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
+  (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let rec = null, recording = false, baseText = "";
 function startRec() {
   if (!SR) { // 非対応: キーボード（音声入力キー）で
@@ -244,12 +254,14 @@ function startRec() {
   speechSynthesis.cancel();
   baseText = transcript.value ? transcript.value + " " : "";
   rec = new SR();
-  rec.lang = "ja-JP"; rec.continuous = true; rec.interimResults = true;
+  // iOS Safari は結果リストに「それまでの全文」を含む累積エントリを追加していくため、
+  // 連結すると重複が増殖する。iOS では最後のエントリだけを採用し、
+  // 発話の区切りごとにセッションを終了（continuous=false）→ onend で確定分を退避して再開する。
+  rec.lang = "ja-JP"; rec.continuous = !IS_IOS; rec.interimResults = true;
   rec.onresult = e => {
-    // iOS Safari は毎イベント「それまでの全文」を返すため、追記ではなく
-    // 認識セッションの全結果から毎回組み立て直す（累積重複を防ぐ）
     let text = "";
-    for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+    if (IS_IOS) text = e.results[e.results.length - 1][0].transcript;
+    else for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
     transcript.value = baseText + text;
     transcript.scrollTop = transcript.scrollHeight;
   };
@@ -278,21 +290,38 @@ function stopRec() {
 }
 function setRecUI(on) {
   micBtn.classList.toggle("rec", on);
-  micHint.textContent = on ? "話し終わったら、もう一度ボタンを押してください" : "ボタンを押して話す";
+  micHint.classList.toggle("rec", on);
+  micHint.textContent = on ? "録音中 — 話し終わったら、もう一度ボタンを押してください" : "ボタンを押して話す";
 }
 function showActions(){ actions.classList.add("show"); }
 function hideActions(){ actions.classList.remove("show"); }
 
-/* ---------- 送信 ---------- */
-function send(qindex, question, answer) {
-  const body = new URLSearchParams({
-    session: state.session, round: ROUND, qindex: String(qindex),
-    question, answer, ts: new Date().toISOString(),
-  });
-  return fetch(WEBHOOK, { method: "POST", mode: "no-cors",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" }, body })
+/* ---------- 送信（キュー方式: 失敗・離脱しても次の機会に再送） ---------- */
+const QKEY = "sendq-" + ROUND;
+function loadQ() { try { return JSON.parse(localStorage.getItem(QKEY)) || []; } catch(e){ return []; } }
+function saveQ(q) { localStorage.setItem(QKEY, JSON.stringify(q)); }
+function post(item) {
+  return fetch(WEBHOOK, { method: "POST", mode: "no-cors", keepalive: true,
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(item) })
     .then(() => true).catch(() => false);
 }
+async function flushQueue() {
+  let q = loadQ();
+  while (q.length) {
+    if (!(await post(q[0]))) return; // 失敗したら残りは次の機会（オンライン復帰・次回起動時）に
+    q = q.slice(1); saveQ(q);
+  }
+}
+async function send(qindex, question, answer) {
+  const item = { session: state.session, round: ROUND, qindex: String(qindex),
+    question, answer, ts: new Date().toISOString() };
+  const q = loadQ(); q.push(item); saveQ(q); // 送信前にキューへ退避（途中で閉じても消えない）
+  await flushQueue();
+  return !loadQ().some(x => x.ts === item.ts);
+}
+window.addEventListener("online", flushQueue);
+flushQueue();
 
 /* ---------- 進行 ---------- */
 function showQuestion(speakIt = true) {
@@ -304,15 +333,29 @@ function showQuestion(speakIt = true) {
   qsub.textContent = QUESTIONS[i].sub;
   transcript.value = ""; transcript.classList.remove("show");
   hideActions(); setRecUI(false); recording = false;
+  hidePauseChoice();
   if (speakIt) speak(QUESTIONS[i].q + (QUESTIONS[i].sub ? " " + QUESTIONS[i].sub : ""));
 }
+function showPauseChoice() {
+  qtext.textContent = "ここまで保存しました。続けますか？";
+  qsub.textContent = "「保存して終了」しても、次回同じリンクを開けば続きから始まります。";
+  transcript.value = ""; transcript.classList.remove("show");
+  hideActions(); setRecUI(false); recording = false;
+  $("controls").classList.add("hidden"); $("skipWrap").classList.add("hidden");
+  $("pauseChoice").classList.add("show");
+}
+function hidePauseChoice() {
+  $("pauseChoice").classList.remove("show");
+  $("controls").classList.remove("hidden"); $("skipWrap").classList.remove("hidden");
+}
 function advance(ackIt) {
-  const done = () => { state.idx++; store.save(state); showQuestion(true); };
   if (ackIt) {
     const ack = ACKS[state.idx % ACKS.length];
+    state.idx++; store.save(state);
     qtext.textContent = ack; qsub.textContent = ""; transcript.classList.remove("show"); hideActions();
-    speak(ack, () => setTimeout(done, 500));
-  } else done();
+    if (state.idx >= QUESTIONS.length) speak(ack, () => setTimeout(() => showQuestion(true), 500));
+    else speak(ack, () => setTimeout(showPauseChoice, 300));
+  } else { state.idx++; store.save(state); showQuestion(true); }
 }
 function finish() {
   stage.classList.add("hidden"); outro.classList.remove("hidden");
@@ -352,6 +395,14 @@ $("skipBtn").onclick = () => {
   if (recording) stopRec();
   state.answers.push({ qindex: state.idx, answer: "(スキップ)", sent: true });
   advance(false);
+};
+$("nextBtn").onclick = () => { hidePauseChoice(); showQuestion(true); };
+$("pauseBtn").onclick = () => {
+  hidePauseChoice();
+  stage.classList.add("hidden"); outro.classList.remove("hidden");
+  $("outroH1").textContent = "今日はここまでにしましょう。";
+  $("outroMsg").innerHTML = "ここまでの回答は保存されています。<br>次回、同じリンクを開くと続きから始まります。";
+  speak("お疲れさまでした。続きは、またいつでもどうぞ。");
 };
 $("copyBtn").onclick = () => {
   const txt = state.answers.map(a => "Q" + (a.qindex+1) + ": " + QUESTIONS[a.qindex].q + "\nA: " + a.answer).join("\n\n");
