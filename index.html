@@ -230,7 +230,7 @@ function speak(text, onend) {
 
 /* ---------- 音声認識 ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-let rec = null, recording = false, finalText = "";
+let rec = null, recording = false, baseText = "";
 function startRec() {
   if (!SR) { // 非対応: キーボード（音声入力キー）で
     transcript.classList.add("show"); transcript.focus();
@@ -238,19 +238,23 @@ function startRec() {
     showActions(); return;
   }
   speechSynthesis.cancel();
-  finalText = transcript.value ? transcript.value + " " : "";
+  baseText = transcript.value ? transcript.value + " " : "";
   rec = new SR();
   rec.lang = "ja-JP"; rec.continuous = true; rec.interimResults = true;
   rec.onresult = e => {
-    let interim = "";
-    for (let i = e.resultIndex; i < e.results.length; i++) {
-      const t = e.results[i][0].transcript;
-      if (e.results[i].isFinal) finalText += t; else interim += t;
-    }
-    transcript.value = finalText + interim;
+    // iOS Safari は毎イベント「それまでの全文」を返すため、追記ではなく
+    // 認識セッションの全結果から毎回組み立て直す（累積重複を防ぐ）
+    let text = "";
+    for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
+    transcript.value = baseText + text;
     transcript.scrollTop = transcript.scrollHeight;
   };
-  rec.onend = () => { if (recording) { try { rec.start(); } catch(e){} } };
+  rec.onend = () => {
+    if (recording) {
+      baseText = transcript.value ? transcript.value + " " : "";
+      try { rec.start(); } catch(e){}
+    }
+  };
   rec.onerror = ev => {
     if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
       recording = false; setRecUI(false);
@@ -329,7 +333,7 @@ $("startBtn").onclick = () => {
 };
 micBtn.onclick = () => recording ? stopRec() : startRec();
 $("replayBtn").onclick = () => speak(QUESTIONS[state.idx].q + (QUESTIONS[state.idx].sub ? " " + QUESTIONS[state.idx].sub : ""));
-$("retryBtn").onclick = () => { transcript.value = ""; finalText = ""; hideActions(); startRec(); };
+$("retryBtn").onclick = () => { transcript.value = ""; baseText = ""; hideActions(); startRec(); };
 $("sendBtn").onclick = async () => {
   const ans = transcript.value.trim(); if (!ans) return;
   $("sendBtn").disabled = true;
