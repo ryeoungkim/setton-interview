@@ -175,7 +175,7 @@
   </section>
 
 </main>
-<footer>セットン韓国語教室 代表インタビュー R2｜発音メソッド（その2）｜v3</footer>
+<footer>セットン韓国語教室 代表インタビュー R2｜発音メソッド（その2）｜v4</footer>
 
 <script>
 const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
@@ -286,7 +286,34 @@ function stopRec() {
   recording = false;
   if (rec) { try { rec.stop(); } catch(e){} }
   setRecUI(false);
+  // iOS の累積エントリ対策をすり抜けた重複をここで畳む（画面に反映され、手直しも可能）
+  transcript.value = dedupeText(transcript.value);
   if (transcript.value.trim()) showActions();
+}
+
+/* ---------- 重複除去（送信前の保険） ---------- */
+// iOS 音声認識の「累積エントリ連結」で生じる、隣接した長い重複チャンクを畳む。
+// 8字未満の繰り返し（「はい、はい」等の意図的な発話）は保護。
+function dedupeText(s) {
+  const MIN = 8;
+  let t = s;
+  let changed = true;
+  while (changed) {
+    changed = false;
+    for (let len = Math.floor(t.length / 2); len >= MIN && !changed; len--) {
+      for (let i = 0; i + len <= t.length; i++) {
+        const chunk = t.slice(i, i + len);
+        const rest = t.slice(i + len);
+        const gap = (rest.match(/^[\s、。]*/) || [""])[0].length;
+        if (rest.slice(gap, gap + len) === chunk) {
+          t = t.slice(0, i + len) + rest.slice(gap + len);
+          changed = true;
+          break;
+        }
+      }
+    }
+  }
+  return t;
 }
 function setRecUI(on) {
   micBtn.classList.toggle("rec", on);
@@ -382,7 +409,7 @@ micBtn.onclick = () => recording ? stopRec() : startRec();
 $("replayBtn").onclick = () => speak(QUESTIONS[state.idx].q + (QUESTIONS[state.idx].sub ? " " + QUESTIONS[state.idx].sub : ""));
 $("retryBtn").onclick = () => { transcript.value = ""; baseText = ""; hideActions(); startRec(); };
 $("sendBtn").onclick = async () => {
-  const ans = transcript.value.trim(); if (!ans) return;
+  const ans = dedupeText(transcript.value.trim()); if (!ans) return;
   $("sendBtn").disabled = true;
   const i = state.idx;
   const ok = await send(i, QUESTIONS[i].q, ans);
