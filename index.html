@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex">
-<title>インタビュー｜発音メソッドのはなし（R2）</title>
+<title>インタビュー｜発音メソッドのはなし（R3）</title>
 <style>
   :root {
     --bg: #FAF7F1;
@@ -124,8 +124,8 @@
   <!-- イントロ -->
   <section id="intro" class="center">
     <div class="orb" style="width:56px;height:56px;"></div>
-    <h1>イ・スンソン先生、<br>前回はありがとうございました。<br>続きを聞かせてください。</h1>
-    <p>テーマは「発音メソッド（その2）」。前回のお話の深掘りと、教室での教え方について、質問は7つです。<br>声が質問を読み上げますので、<b>赤いボタンを押して、話すように</b>答えてください。</p>
+    <h1>イ・スンソン先生、<br>前回もありがとうございました。<br>3回目のインタビューです。</h1>
+    <p>テーマは「発音メソッド（その3）」。前回聞きそびれたことと、「発音と聞き取り」のお話です。質問は7つ。<br>声が質問を読み上げますので、<b>赤いボタンを押して、話すように</b>答えてください。</p>
     <p>きれいに話す必要はまったくありません。思い出話をするつもりで。疲れたら途中で閉じても、続きから再開できます。</p>
     <button id="startBtn" class="btn primary big">インタビューを始める</button>
     <p class="note">マイクの使用許可を求められたら「許可」を押してください。</p>
@@ -175,25 +175,25 @@
   </section>
 
 </main>
-<footer>セットン韓国語教室 代表インタビュー R2｜発音メソッド（その2）｜v4.1</footer>
+<footer>セットン韓国語教室 代表インタビュー R3｜発音メソッド（その3）｜v5</footer>
 
 <script>
 const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
-const ROUND = "R2";
+const ROUND = "R3";
 const QUESTIONS = [
-  { q:"前回、「うちの先生と2人で、鏡を見ながら練習方法を考えた」とお話しされました。その「うちの先生」とは、どなたのことですか？",
-    sub:"いつ頃、どんなきっかけで始まった研究だったのかも聞かせてください。" },
-  { q:"鏡を見ながらの試行錯誤で、「この教え方なら伝わる」と最初に手応えを感じたのは、どんな瞬間でしたか？",
-    sub:"生徒さんの発音がその場で変わった瞬間があれば、その時のやりとりを聞かせてください。" },
-  { q:"ㄱのパッチムは「小さい『ッ』の音」で教えるとおっしゃいました。教室での実際のやりとりを再現するつもりで、先生がいつも生徒さんに言うセリフを、そのまま話してみてください。",
-    sub:"" },
-  { q:"オンラインの無料体験で、「パクボゴムのファンです」と言われて、一瞬「誰かな？」と聞き返してしまった話がメモにありました。その場面をくわしく聞かせてください。",
-    sub:"パッチムを日本語のように発音してしまうと、韓国の人にはどう聞こえるのか、も。" },
-  { q:"母音の話も聞かせてください。「ㅓ」を難しがる生徒さんに、「口をㅏより小さく横に開いて、下顎が少し前に出るくらい」と教えるとメモにありました。この言い方は、どうやって見つけたんですか？",
-    sub:"" },
-  { q:"発音の反復練習は、生徒さんにとって根気のいる作業だと思います。飽きさせない、心が折れさせないために、工夫していることはありますか？",
-    sub:"" },
-  { q:"最後です。発音の教え方について、ほかに思い出す話やこぼれ話があれば、何でもどうぞ。",
+  { q:"前回、聞きそびれた質問からです。発音の練習方法を、鏡を見ながら一緒に考えた「うちの先生」について教えてください。セットンの先生ですか？　いつ頃、どんなきっかけで、その研究は始まりましたか？",
+    sub:"お名前はそのまま話していただいて大丈夫です。記事にするときは仮名にします。" },
+  { q:"生徒さんのㄹのパッチムができた時に、「できたよ」と書いて言ってあげた、というお話がありました。その場面をもう少し聞かせてください。オンラインのレッスンですか？　どんなふうに練習して、どんなふうに伝えたんですか？",
+    sub:"その時の生徒さんの反応も、覚えていれば。" },
+  { q:"ㄱ・ㅂ・ㄷのパッチムは、どれも日本語の小さい「ッ」に聞こえるけれど、口の形と舌の位置が違う、というお話でした。それぞれ、どんな単語を例にして教えていますか？",
+    sub:"実際の授業のつもりで、例を挙げながらどうぞ。" },
+  { q:"パクボゴムのファンの方のお話の続きです。その体験レッスンの方は、その後どうなりましたか？",
+    sub:"「パッポゴム」と正しく言えた瞬間の様子も、覚えていれば聞かせてください。" },
+  { q:"発音ができるようになると、聞き取りも変わる、とおっしゃっていました。生徒さんの聞き取りが変わった実例で、印象に残っている方はいますか？",
+    sub:"ドラマが聞き取れるようになった、旅行で聞き返されなくなった、など。" },
+  { q:"以前メモに、「赤ちゃんは生まれたときは全ての言語の音を聞き分けるが、大人になると母国語にない音は聞き取れなくなる」という研究のお話を書かれていました。大人の生徒さんでも、発音の練習をすると聞き取れるようになるのは、なぜだと思いますか？",
+    sub:"研究の話でなくて大丈夫です。教室での先生の実感を聞かせてください。" },
+  { q:"最後です。発音と聞き取りについて、ほかに思い出す話やこぼれ話があれば、何でもどうぞ。",
     sub:"どんな小さな話でも、次のインタビューの種になります。" },
 ];
 const ACKS = [
@@ -326,8 +326,8 @@ function hideActions(){ actions.classList.remove("show"); }
 
 /* ---------- 送信（キュー方式: 失敗・離脱しても次の機会に再送） ---------- */
 const QKEY = "sendq-" + ROUND;
-function loadQ() { try { return JSON.parse(localStorage.getItem(QKEY)) || []; } catch(e){ return []; } }
-function saveQ(q) { localStorage.setItem(QKEY, JSON.stringify(q)); }
+function loadQ(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e){ return []; } }
+function saveQ(key, q) { q.length ? localStorage.setItem(key, JSON.stringify(q)) : localStorage.removeItem(key); }
 function post(item) {
   return fetch(WEBHOOK, { method: "POST", mode: "no-cors", keepalive: true,
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -335,18 +335,22 @@ function post(item) {
     .then(() => true).catch(() => false);
 }
 async function flushQueue() {
-  let q = loadQ();
-  while (q.length) {
-    if (!(await post(q[0]))) return; // 失敗したら残りは次の機会（オンライン復帰・次回起動時）に
-    q = q.slice(1); saveQ(q);
+  // 旧ラウンドの滞留分も含めて全キューを再送（ラウンド更新後も未達回答を取りこぼさない）
+  const keys = Object.keys(localStorage).filter(k => k.indexOf("sendq-") === 0);
+  for (const key of keys) {
+    let q = loadQ(key);
+    while (q.length) {
+      if (!(await post(q[0]))) return; // 失敗したら残りは次の機会（オンライン復帰・次回起動時）に
+      q = q.slice(1); saveQ(key, q);
+    }
   }
 }
 async function send(qindex, question, answer) {
   const item = { session: state.session, round: ROUND, qindex: String(qindex),
     question, answer, ts: new Date().toISOString() };
-  const q = loadQ(); q.push(item); saveQ(q); // 送信前にキューへ退避（途中で閉じても消えない）
+  const q = loadQ(QKEY); q.push(item); saveQ(QKEY, q); // 送信前にキューへ退避（途中で閉じても消えない）
   await flushQueue();
-  return !loadQ().some(x => x.ts === item.ts);
+  return !loadQ(QKEY).some(x => x.ts === item.ts);
 }
 window.addEventListener("online", flushQueue);
 flushQueue();
