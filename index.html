@@ -175,7 +175,7 @@
   </section>
 
 </main>
-<footer>セットン韓国語教室 代表インタビュー R2｜発音メソッド（その2）｜v4</footer>
+<footer>セットン韓国語教室 代表インタビュー R2｜発音メソッド（その2）｜v4.1</footer>
 
 <script>
 const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
@@ -293,9 +293,10 @@ function stopRec() {
 
 /* ---------- 重複除去（送信前の保険） ---------- */
 // iOS 音声認識の「累積エントリ連結」で生じる、隣接した長い重複チャンクを畳む。
-// 8字未満の繰り返し（「はい、はい」等の意図的な発話）は保護。
+// 6字未満の繰り返し（「はい、はい」「練習して、練習して」等の意図的な発話）は保護。
+// （R2 実データ検証: しきい値8では「日本の方はこの」等7字の繰り返し残骸が残ったため6に調整）
 function dedupeText(s) {
-  const MIN = 8;
+  const MIN = 6;
   let t = s;
   let changed = true;
   while (changed) {
@@ -418,9 +419,12 @@ $("sendBtn").onclick = async () => {
   $("sendBtn").disabled = false;
   advance(true);
 };
-$("skipBtn").onclick = () => {
+$("skipBtn").onclick = async () => {
   if (recording) stopRec();
-  state.answers.push({ qindex: state.idx, answer: "(スキップ)", sent: true });
+  const i = state.idx;
+  // スキップも送信する（未回答が「スキップ」か「送信未達」か回収側で区別できるように）
+  const ok = await send(i, QUESTIONS[i].q, "(スキップ)");
+  state.answers.push({ qindex: i, answer: "(スキップ)", sent: ok });
   advance(false);
 };
 $("nextBtn").onclick = () => { hidePauseChoice(); showQuestion(true); };
