@@ -24,157 +24,130 @@
     font-size: 16px; line-height: 1.9; display: flex; flex-direction: column; }
   .stripe { height: 4px; flex: none;
     background: linear-gradient(90deg, var(--sd1) 0 20%, var(--sd2) 20% 40%, var(--sd3) 40% 60%, var(--sd4) 60% 80%, var(--sd5) 80% 100%); }
-  main { flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 20px 22px 40px; display: flex; flex-direction: column; }
+  main { flex: 1; width: 100%; max-width: 660px; margin: 0 auto; padding: 20px 22px 60px; display: flex; flex-direction: column; }
 
-  .progress { display: flex; align-items: center; gap: 12px; margin: 6px 0 22px; }
-  .progress .bar { flex: 1; height: 3px; background: var(--line); border-radius: 2px; overflow: hidden; }
-  .progress .bar i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--sd1), var(--sd4)); transition: width .5s ease; }
-  .progress .label { font-size: 12.5px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* ヘッダー */
+  .head { margin: 4px 0 6px; }
+  .head h1 { font-family: var(--serif); font-size: 22px; font-weight: 600; margin: 0 0 6px; }
+  .head p { color: var(--ink-2); font-size: 14px; margin: 0; }
 
-  .itemhead { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+  /* 集計バー（スティッキー） */
+  .summary { position: sticky; top: 0; z-index: 5; margin: 14px 0 6px;
+    background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(6px);
+    border: 1px solid var(--line); border-radius: 12px; padding: 10px 14px;
+    display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; font-size: 13px; }
+  .summary .s { display: inline-flex; align-items: center; gap: 6px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .summary .s b { font-size: 15px; color: var(--ink); }
+  .summary .dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .dot.ok { background: var(--ok); } .dot.rev { background: var(--accent); }
+  .dot.later { background: var(--sd3); } .dot.todo { background: var(--line); border: 1px solid var(--ink-2); }
+  .summary .alldone { margin-left: auto; color: var(--ok); font-weight: 700; display: none; }
+  .summary.done .alldone { display: inline; }
+
+  /* カード */
+  .card { background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px;
+    padding: 16px 16px 14px; margin-top: 16px; transition: border-color .2s ease, opacity .2s ease; }
+  .card.settled { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+  .card.settled.rev { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+  .card.settled.later { border-color: color-mix(in srgb, var(--sd3) 55%, var(--line)); }
+
+  .itemhead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
   .chbadge { font-size: 12px; font-weight: 700; letter-spacing: .04em; padding: 3px 11px; border-radius: 999px; }
-  .chbadge.x { color: #fff; background: var(--calm); }
+  .chbadge.X { color: #fff; background: var(--calm); }
   .chbadge.note { color: #fff; background: var(--sd4); }
   .itemlabel { font-size: 13px; color: var(--ink-2); }
-  .readbtn { margin-left: auto; background: none; border: none; color: var(--calm); font-size: 13px; cursor: pointer; font-family: var(--sans); padding: 4px; }
+  .chip { margin-left: auto; font-size: 12.5px; font-weight: 700; padding: 4px 12px; border-radius: 999px; display: none; }
+  .chip.show { display: inline-block; }
+  .chip.ok { color: var(--ok); background: var(--ok-soft); }
+  .chip.rev { color: var(--accent); background: var(--accent-soft); }
+  .chip.later { color: #7a5a10; background: color-mix(in srgb, var(--sd3) 22%, transparent); }
+  .chip .pending { font-weight: 500; opacity: .8; }
 
-  .postbody {
-    background: var(--surface); border: 1.5px solid var(--line); border-radius: 16px;
-    padding: 20px 20px; max-height: 46vh; overflow-y: auto;
-    font-size: 16.5px; line-height: 1.95; color: var(--ink); white-space: pre-wrap; word-break: break-word;
-  }
-  .postbody.note-art { font-family: var(--serif); font-size: 16px; }
+  .postbody { border: 1px solid var(--line); border-radius: 12px; background: var(--bg);
+    padding: 14px 15px; max-height: 42vh; overflow-y: auto;
+    font-size: 16px; line-height: 1.9; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+  .postbody.note-art { font-family: var(--serif); }
   .postbody .flag { color: var(--accent); font-weight: 700; font-size: 13.5px; font-family: var(--sans); }
-  .postbody .r-lead { font-size: 12.5px; color: var(--accent); font-weight: 700; margin-bottom: 12px; }
-  .postbody .r-body { font-size: 16.5px; line-height: 1.95; }
-  .postbody .r-tags { margin-top: 14px; color: var(--calm); font-weight: 600; font-size: 14.5px; }
-  .postbody .r-reply { margin-top: 16px; padding-top: 13px; border-top: 1px dashed var(--line); font-size: 13.5px; color: var(--ink-2); line-height: 1.7; }
+  .postbody .r-lead { font-size: 12.5px; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+  .postbody .r-body { font-size: 16px; line-height: 1.9; }
+  .postbody .r-tags { margin-top: 12px; color: var(--calm); font-weight: 600; font-size: 14px; }
+  .postbody .r-reply { margin-top: 14px; padding-top: 11px; border-top: 1px dashed var(--line); font-size: 13px; color: var(--ink-2); line-height: 1.7; }
   .postbody .r-reply .r-rl { display: inline-block; font-size: 10.5px; font-weight: 700; color: var(--ink-2); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; margin-right: 8px; }
 
-  /* 判定ボタン */
-  .decide { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
-  .bigbtn { font-family: var(--sans); font-size: 17px; font-weight: 700; cursor: pointer;
-    border-radius: 16px; padding: 18px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
-    display: flex; align-items: center; justify-content: center; gap: 10px; transition: transform .12s ease; }
-  .bigbtn:active { transform: scale(.98); }
-  .bigbtn.ok { background: var(--ok); border-color: var(--ok); color: #fff; box-shadow: 0 6px 20px color-mix(in srgb, var(--ok) 34%, transparent); }
-  .bigbtn.revise { background: var(--surface); border-color: var(--accent); color: var(--accent); }
-  .bigbtn:disabled { opacity: .5; cursor: default; }
-  .skip { background: none; border: none; color: var(--ink-2); font-size: 13px; cursor: pointer;
-    font-family: var(--sans); margin-top: 18px; text-decoration: underline; text-underline-offset: 3px; align-self: center; }
+  /* 判定ボタン（1行3択・コンパクト） */
+  .decide { display: flex; gap: 8px; margin-top: 14px; }
+  .dbtn { flex: 1; font-family: var(--sans); font-size: 14.5px; font-weight: 700; cursor: pointer;
+    border-radius: 12px; padding: 12px 8px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink);
+    display: flex; align-items: center; justify-content: center; gap: 6px; transition: transform .1s ease; }
+  .dbtn:active { transform: scale(.97); }
+  .dbtn.ok.sel { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .dbtn.revise.sel { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .dbtn.later.sel { background: var(--sd3); border-color: var(--sd3); color: #3a2a05; }
+  .dbtn:disabled { opacity: .55; cursor: default; }
 
   /* 修正パネル */
-  .revise-panel { margin-top: 20px; padding-top: 20px; border-top: 1.5px dashed var(--line); }
-  .revise-panel .lead { font-size: 14px; color: var(--ink-2); margin: 0 0 14px; text-align: center; }
-  .transcript { width: 100%; min-height: 96px; max-height: 30vh; overflow-y: auto;
-    background: var(--surface); border: 1.5px solid var(--line); border-radius: 14px; padding: 14px 16px;
-    font-family: var(--sans); font-size: 16px; line-height: 1.9; color: var(--ink); resize: none; display: none; }
-  .transcript.show { display: block; }
+  .revise-panel { margin-top: 14px; padding-top: 14px; border-top: 1.5px dashed var(--line); display: none; }
+  .revise-panel.show { display: block; }
+  .revise-panel .lead { font-size: 13.5px; color: var(--ink-2); margin: 0 0 12px; text-align: center; }
+  .transcript { width: 100%; min-height: 84px; max-height: 26vh; overflow-y: auto;
+    background: var(--surface); border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px;
+    font-family: var(--sans); font-size: 15.5px; line-height: 1.85; color: var(--ink); resize: none; }
   .transcript:focus { outline: 2px solid var(--calm); border-color: transparent; }
-  .controls { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 16px; }
-  .mic { width: 78px; height: 78px; border-radius: 50%; border: none; cursor: pointer; background: var(--accent); color: #fff;
+  .controls { display: flex; flex-direction: column; align-items: center; gap: 9px; margin: 14px 0 6px; }
+  .mic { width: 64px; height: 64px; border-radius: 50%; border: none; cursor: pointer; background: var(--accent); color: #fff;
     position: relative; display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 6px 22px color-mix(in srgb, var(--accent) 40%, transparent); transition: transform .15s ease; }
+    box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 38%, transparent); transition: transform .15s ease; }
   .mic:active { transform: scale(.94); }
-  .mic svg { width: 32px; height: 32px; fill: #fff; }
-  .mic.rec::before { content:""; position:absolute; inset:-9px; border-radius:50%;
+  .mic svg { width: 28px; height: 28px; fill: #fff; }
+  .mic.rec::before { content:""; position:absolute; inset:-8px; border-radius:50%;
     border: 3px solid color-mix(in srgb, var(--accent) 55%, transparent); animation: pulse 1.2s ease-out infinite; }
   @keyframes pulse { 0% { transform: scale(.85); opacity:.9; } 100% { transform: scale(1.25); opacity: 0; } }
   @media (prefers-reduced-motion: reduce) { .mic.rec::before { animation: none; opacity:.6; } }
-  .mic-hint { font-size: 13.5px; color: var(--ink-2); text-align: center; }
+  .mic-hint { font-size: 13px; color: var(--ink-2); text-align: center; }
   .mic-hint.rec { color: var(--accent); font-weight: 700; }
-  .actions { display: none; gap: 10px; margin-top: 16px; flex-wrap: wrap; justify-content: center; }
-  .actions.show { display: flex; }
-  .btn { font-family: var(--sans); font-size: 15px; font-weight: 600; cursor: pointer; border-radius: 999px;
-    padding: 12px 22px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); }
+  .r-actions { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .btn { font-family: var(--sans); font-size: 14.5px; font-weight: 600; cursor: pointer; border-radius: 999px;
+    padding: 11px 20px; border: 1.5px solid var(--line); background: var(--surface); color: var(--ink); }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   .btn:disabled { opacity: .5; cursor: default; }
-  .cancel-revise { background: none; border: none; color: var(--ink-2); font-size: 13px; cursor: pointer;
-    font-family: var(--sans); margin-top: 14px; text-decoration: underline; text-underline-offset: 3px; display: block; margin-left: auto; margin-right: auto; }
+  .cancel-revise { background: none; border: none; color: var(--ink-2); font-size: 12.5px; cursor: pointer;
+    font-family: var(--sans); margin-top: 10px; text-decoration: underline; text-underline-offset: 3px; display: block; margin: 12px auto 0; }
 
-  /* イントロ / エンド */
-  .center { margin: auto; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 8px; }
-  .center .orb { width: 56px; height: 56px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, var(--calm), color-mix(in srgb, var(--calm) 60%, var(--ink))); }
-  .center h1 { font-family: var(--serif); font-size: 25px; font-weight: 600; line-height: 1.7; margin: 18px 0 4px; text-wrap: balance; }
-  .center p { color: var(--ink-2); font-size: 15px; max-width: 30em; margin: 4px 0; }
-  .center .big { margin-top: 26px; font-size: 17px; padding: 16px 40px; }
-  .note-s { font-size: 12.5px; color: var(--ink-2); margin-top: 20px; }
-  .backlink { margin-top: 22px; color: var(--calm); font-size: 14px; text-decoration: none; }
-
+  .backlink { display: inline-block; margin-top: 26px; color: var(--calm); font-size: 14px; text-decoration: none; }
   footer { flex: none; text-align: center; font-size: 11.5px; color: var(--ink-2); padding: 10px 20px 16px; }
   :focus-visible { outline: 2px solid var(--calm); outline-offset: 2px; }
-  .hidden { display: none !important; }
 </style>
 </head>
 <body>
 <div class="stripe"></div>
 <main>
 
-  <!-- イントロ -->
-  <section id="intro" class="center">
-    <div class="orb"></div>
+  <div class="head">
     <h1>投稿の確認をお願いします</h1>
-    <p>X や note に出す文章です。1つずつお見せします。<br><b>「これでOK」を押す</b>か、直したいところがあれば<b>声で教えて</b>ください。</p>
-    <p>全部で <span id="itemCount">—</span> 件。途中でやめても、続きから再開できます。</p>
-    <button id="startBtn" class="bigbtn ok big">確認を始める</button>
-    <a class="backlink" href="index.html">← 最初の画面にもどる</a>
-  </section>
+    <p>X や note に出す文章です。1つずつ、<b>「これでOK」</b>か、直したいところは<b>「直す・付け足す」</b>で声で教えてください。押した結果はその場で金さんに届きます。</p>
+  </div>
 
-  <!-- 確認ステージ -->
-  <section id="stage" class="hidden" style="display:flex; flex-direction:column; flex:1;">
-    <div class="progress">
-      <span class="label" id="plabel">1 / 1</span>
-      <div class="bar"><i id="pbar"></i></div>
-    </div>
-    <div class="itemhead">
-      <span class="chbadge" id="chbadge">X</span>
-      <span class="itemlabel" id="itemlabel"></span>
-      <button class="readbtn" id="readBtn">🔊 読み上げ</button>
-    </div>
-    <div class="postbody" id="postbody"></div>
+  <div class="summary" id="summary">
+    <span class="s"><span class="dot ok"></span>承認 <b id="cOk">0</b></span>
+    <span class="s"><span class="dot rev"></span>修正 <b id="cRev">0</b></span>
+    <span class="s"><span class="dot later"></span>あとで <b id="cLater">0</b></span>
+    <span class="s"><span class="dot todo"></span>未対応 <b id="cTodo">0</b></span>
+    <span class="alldone">すべて確認できました ✓</span>
+  </div>
 
-    <div class="decide" id="decide">
-      <button class="bigbtn ok" id="approveBtn">✅ これでOK（承認）</button>
-      <button class="bigbtn revise" id="reviseBtn">✏️ 直す・付け足す</button>
-    </div>
-    <button class="skip" id="skipBtn">この投稿はあとで</button>
+  <div id="list"></div>
 
-    <div class="revise-panel hidden" id="revisePanel">
-      <p class="lead">直したいところ・付け足したいことを、声で話してください。</p>
-      <div class="controls" id="controls">
-        <button class="mic" id="micBtn" aria-label="話す">
-          <svg viewBox="0 0 24 24"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.94V22h2v-2.56A8 8 0 0 0 20 11.5h-2Z"/></svg>
-        </button>
-        <span class="mic-hint" id="micHint">ボタンを押して話す</span>
-      </div>
-      <textarea class="transcript" id="transcript" placeholder="ここに話した内容が文字になります（手で直してもOK）"></textarea>
-      <div class="actions" id="actions">
-        <button class="btn" id="retryBtn">録り直す</button>
-        <button class="btn primary" id="sendReviseBtn">この修正を送る</button>
-      </div>
-      <button class="cancel-revise" id="cancelReviseBtn">やっぱりOKにする</button>
-    </div>
-  </section>
-
-  <!-- エンド -->
-  <section id="outro" class="center hidden">
-    <div class="orb"></div>
-    <h1 id="outroH1">ありがとうございました。</h1>
-    <p id="outroMsg">確認の結果は、すべて金さんに届いています。<br>直しのご指摘は反映してから、公開します。</p>
-    <p class="note-s" id="sentStat"></p>
-    <a class="backlink" href="index.html">← 最初の画面にもどる</a>
-  </section>
+  <a class="backlink" href="index.html">← 最初の画面にもどる</a>
 
 </main>
-<footer>セットン韓国語教室 投稿確認｜v1.1</footer>
+<footer>セットン韓国語教室 投稿確認｜v2</footer>
 
 <script>
 const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
 const ROUND = "REVIEW";
 
 /* 確認対象（発音ブロック・型適用：導入+X投稿7本 + note記事3本）。バッチ更新時はここを差し替える。
-   X項目は lead=リード / text=本文 / tags=ハッシュタグ / reply=noteリプ（任意）。読み上げは text のみ。 */
+   X項目は lead=リード / text=本文 / tags=ハッシュタグ / reply=noteリプ（任意）。 */
 const REVIEW_ITEMS = [
   { id:"X0", ch:"X", label:"導入投稿（発音シリーズの枠）", text:"きょうから、発音のはなしを少しずつ続けます。「発音は才能ではなく、手順で身につく」——韓国語を教えて26年、1000人以上を見てきて、私がいちばん伝えたいことです。まずは、韓国で「いちご」が通じなかった話から。", tags:"#韓国語 #韓国語勉強中" },
   { id:"X1", ch:"X", label:"X投稿①　発音・タルギ", lead:"よくある話", text:"韓国旅行でよくある話です。「いちごください」のつもりで「タルギ ジュセヨ」。果物屋さんで「えっ？」となります。カタカナのルビ通りだと、韓国の人には別の単語に聞こえるから。最初につまずくのは文字ではなく、パッチムの音なんです🍓", tags:"#韓国語発音 #パッチム", reply:"なぜ通じず、どう直すのか。noteにくわしく書きました📝→ 章1-1（公開後リンク）" },
@@ -189,77 +162,69 @@ const REVIEW_ITEMS = [
   { id:"note1-3", ch:"note", label:"note記事　章1-3　パクボゴムが通じない", text:"ある日の、オンライン授業の無料体験でのことです。\n\n「ドラマをよく見ています」という方に「誰のファンですか？」と聞くと、「パクボゴム」。私は一瞬、「えっ？」と聞き返してしまいました。\n\n「パクボゴム」はカタカナ通りに読むと、正確な音から少しずれます。韓国語のパッチムでは、박の「ク」や보검の「ム」は、はっきり音にして言わないんです。でも日本語にはこの感覚がないので「パーク」「ボゴ・ム」と付けてしまい、別の人の名前に聞こえることも。正しくは「パッポゴム」です。\n\n教え方は「パクの部分は、パッという小さい『ッ』を、口を開けたまま舌を動かさないで」と、口と舌の動きで具体的に伝えます。この方も何回か練習すると言えるようになり、好きな俳優の名前を正しく言えたと喜んでいました。\n【要確認：この体験レッスンの方は、その後どうなりましたか？（入会されたか等）】\n\nこの「小さいッ」は一種類ではありません。ㄱ・ㅂ・ㄷの三つが日本語の「ッ」に聞こえますが、口の形と舌の位置がそれぞれ違う。だから一つずつ分けて教えます。\n【要確認：ㄱ・ㅂ・ㄷ、それぞれどんな単語を例に教えていますか？】\n\n発音練習は根気がいって飽きます。だから基本の母音が入った単語で練習し、できた時はしっかり褒める。パッチムは一番の難所ですが、口と舌の動きを言葉にして単語で楽しく練習すれば、必ず言えるようになります。\n\n（イ・スンソン）" },
 ];
 
-/* ===== 以下、インタビューアプリと同じ背骨（TTS・音声認識・送信キュー・再開） ===== */
+/* ===== 状態（各項目の判定を保存・再開） ===== */
+const SKEY = "postreview2-" + ROUND;
 const store = {
-  get k() { return "postreview-" + ROUND; },
-  load() { try { return JSON.parse(localStorage.getItem(this.k)) || {}; } catch(e){ return {}; } },
-  save(s) { localStorage.setItem(this.k, JSON.stringify(s)); },
+  load() { try { return JSON.parse(localStorage.getItem(SKEY)) || null; } catch(e){ return null; } },
+  save(s) { localStorage.setItem(SKEY, JSON.stringify(s)); },
 };
 if (new URLSearchParams(location.search).has("reset")) {
-  localStorage.removeItem("postreview-" + ROUND);
+  localStorage.removeItem(SKEY);
+  Object.keys(localStorage).filter(k => k.indexOf("sendq-") === 0).forEach(k => localStorage.removeItem(k));
   history.replaceState(null, "", location.pathname);
 }
-let state = Object.assign({ session: "REV-" + Math.random().toString(36).slice(2,7), idx: 0, results: [] }, store.load());
+let state = store.load() || { session: "REV-" + Math.random().toString(36).slice(2,7), decisions: {} };
+if (!state.decisions) state.decisions = {};
 
 const $ = id => document.getElementById(id);
-const intro=$("intro"), stage=$("stage"), outro=$("outro"),
-  postbody=$("postbody"), transcript=$("transcript"), micBtn=$("micBtn"),
-  micHint=$("micHint"), actions=$("actions"), plabel=$("plabel"), pbar=$("pbar"),
-  decide=$("decide"), revisePanel=$("revisePanel");
 
-/* ---------- 音声合成 ---------- */
-let jaVoice = null;
-function pickVoice() {
-  const vs = speechSynthesis.getVoices().filter(v => v.lang && v.lang.startsWith("ja"));
-  jaVoice = vs.find(v => /Kyoko|O-Ren|Google/.test(v.name)) || vs[0] || null;
-}
-if ("speechSynthesis" in window) { pickVoice(); speechSynthesis.onvoiceschanged = pickVoice; }
-function speak(text, onend) {
-  if (!("speechSynthesis" in window)) { onend && onend(); return; }
-  speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.lang = "ja-JP"; if (jaVoice) u.voice = jaVoice; u.rate = 0.96; u.pitch = 1.0;
-  u.onend = u.onerror = () => { onend && onend(); };
-  speechSynthesis.speak(u);
-}
-
-/* ---------- 音声認識 ---------- */
+/* ---------- 音声認識（TTS読み上げは廃止） ---------- */
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 const IS_IOS = /iP(hone|ad|od)/.test(navigator.userAgent) ||
   (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 let rec = null, recording = false, baseText = "";
+let active = null; // { id, ta, mic, hint, actions }
+
+function setRecUI(on) {
+  if (!active) return;
+  active.mic.classList.toggle("rec", on); active.hint.classList.toggle("rec", on);
+  active.hint.textContent = on ? "録音中 — 話し終わったら、もう一度ボタンを押してください" : "ボタンを押して話す";
+}
+function showActions(){ if (active) active.actions.classList.add("show"); }
+function hideActions(){ if (active) active.actions.classList.remove("show"); }
+
 function startRec() {
+  if (!active) return;
   if (!SR) {
-    transcript.classList.add("show"); transcript.focus();
-    micHint.textContent = "この端末では、キーボードのマイクキーで音声入力してください";
+    active.ta.focus();
+    active.hint.textContent = "この端末では、キーボードのマイクキーで音声入力してください";
     showActions(); return;
   }
-  speechSynthesis.cancel();
-  baseText = transcript.value ? transcript.value + " " : "";
+  const ta = active.ta;
+  baseText = ta.value ? ta.value + " " : "";
   rec = new SR();
   rec.lang = "ja-JP"; rec.continuous = !IS_IOS; rec.interimResults = true;
   rec.onresult = e => {
     let text = "";
     if (IS_IOS) text = e.results[e.results.length - 1][0].transcript;
     else for (let i = 0; i < e.results.length; i++) text += e.results[i][0].transcript;
-    transcript.value = baseText + text; transcript.scrollTop = transcript.scrollHeight;
+    ta.value = baseText + text; ta.scrollTop = ta.scrollHeight;
   };
-  rec.onend = () => { if (recording) { baseText = transcript.value ? transcript.value + " " : ""; try { rec.start(); } catch(e){} } };
+  rec.onend = () => { if (recording) { baseText = ta.value ? ta.value + " " : ""; try { rec.start(); } catch(e){} } };
   rec.onerror = ev => {
     if (ev.error === "not-allowed" || ev.error === "service-not-allowed") {
       recording = false; setRecUI(false);
-      micHint.textContent = "マイクが使えないため、下の枠にキーボードで入力してください";
-      transcript.classList.add("show"); showActions();
+      active.hint.textContent = "マイクが使えないため、下の枠にキーボードで入力してください";
+      active.ta.focus(); showActions();
     }
   };
   try { rec.start(); } catch(e){}
-  recording = true; setRecUI(true); transcript.classList.add("show");
+  recording = true; setRecUI(true);
 }
 function stopRec() {
   recording = false; if (rec) { try { rec.stop(); } catch(e){} }
   setRecUI(false);
-  transcript.value = dedupeText(transcript.value);
-  if (transcript.value.trim()) showActions();
+  if (active) { active.ta.value = dedupeText(active.ta.value); if (active.ta.value.trim()) showActions(); }
 }
 function dedupeText(s) {
   const MIN = 6; let t = s; let changed = true;
@@ -275,17 +240,11 @@ function dedupeText(s) {
   }
   return t;
 }
-function setRecUI(on) {
-  micBtn.classList.toggle("rec", on); micHint.classList.toggle("rec", on);
-  micHint.textContent = on ? "録音中 — 話し終わったら、もう一度ボタンを押してください" : "ボタンを押して話す";
-}
-function showActions(){ actions.classList.add("show"); }
-function hideActions(){ actions.classList.remove("show"); }
 
-/* ---------- 送信（キュー方式） ---------- */
-const QKEY = "sendq-" + ROUND;
+/* ---------- 送信（キュー方式・オフライン再送） ---------- */
 function loadQ(key) { try { return JSON.parse(localStorage.getItem(key)) || []; } catch(e){ return []; } }
 function saveQ(key, q) { q.length ? localStorage.setItem(key, JSON.stringify(q)) : localStorage.removeItem(key); }
+const QKEY = "sendq-" + ROUND;
 function post(item) {
   return fetch(WEBHOOK, { method: "POST", mode: "no-cors", keepalive: true,
     headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(item) })
@@ -299,114 +258,163 @@ async function flushQueue() {
   }
 }
 async function send(item, decision) {
-  const rec = { session: state.session, round: ROUND, qindex: item.id,
+  const r = { session: state.session, round: ROUND, qindex: item.id,
     question: "[" + item.ch + "] " + item.label, answer: decision, ts: new Date().toISOString() };
-  const q = loadQ(QKEY); q.push(rec); saveQ(QKEY, q);
+  const q = loadQ(QKEY); q.push(r); saveQ(QKEY, q);
   await flushQueue();
-  return !loadQ(QKEY).some(x => x.ts === rec.ts);
+  return !loadQ(QKEY).some(x => x.ts === r.ts); // true = 送信済み / false = キュー滞留
 }
 window.addEventListener("online", flushQueue);
 flushQueue();
 
-/* ---------- 進行 ---------- */
+/* ---------- 描画 ---------- */
 function esc(s){ return s.replace(/[&<>]/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;" }[c])); }
-function renderPost(item) {
-  const isNote = item.ch === "note";
-  postbody.classList.toggle("note-art", isNote);
-  if (isNote) {
-    // note記事：本文をそのまま。【要確認…】の行は控えめに強調
-    postbody.innerHTML = item.text.split("\n").map(line =>
+function postInnerHTML(item) {
+  if (item.ch === "note") {
+    return item.text.split("\n").map(line =>
       /^【要確認/.test(line.trim()) ? '<span class="flag">' + esc(line) + '</span>' : esc(line)
     ).join("\n");
-    return;
   }
-  // X投稿：代表が「実際に出る形」で見られるよう、リード／本文／タグ／リプを分けて表示
   let html = "";
   if (item.lead)  html += '<div class="r-lead">リード：' + esc(item.lead) + '</div>';
   html += '<div class="r-body">' + esc(item.text) + '</div>';
   if (item.tags)  html += '<div class="r-tags">' + esc(item.tags) + '</div>';
   if (item.reply) html += '<div class="r-reply"><span class="r-rl">リプ</span>' + esc(item.reply) + '</div>';
-  postbody.innerHTML = html;
-}
-function showItem() {
-  const i = state.idx;
-  if (i >= REVIEW_ITEMS.length) return finish();
-  const item = REVIEW_ITEMS[i];
-  plabel.textContent = (i+1) + " / " + REVIEW_ITEMS.length;
-  pbar.style.width = (i / REVIEW_ITEMS.length * 100) + "%";
-  $("chbadge").textContent = item.ch; $("chbadge").className = "chbadge " + item.ch;
-  $("itemlabel").textContent = item.label;
-  renderPost(item); postbody.scrollTop = 0;
-  closeRevise();
-  decide.classList.remove("hidden"); $("skipBtn").classList.remove("hidden");
-  $("approveBtn").disabled = false;
-  if (item.ch === "X") speak(item.text); // 短いXは自動読み上げ、noteは長いので読み上げボタンで
-}
-function openRevise() {
-  decide.classList.add("hidden"); $("skipBtn").classList.add("hidden");
-  revisePanel.classList.remove("hidden");
-  transcript.value = ""; transcript.classList.remove("show"); hideActions(); setRecUI(false); recording = false;
-}
-function closeRevise() {
-  revisePanel.classList.add("hidden");
-  transcript.value = ""; hideActions(); setRecUI(false); recording = false;
-  if (rec) { try { rec.stop(); } catch(e){} }
-}
-function ackAndNext(msg) {
-  decide.classList.add("hidden"); $("skipBtn").classList.add("hidden"); closeRevise();
-  postbody.classList.remove("note-art"); postbody.innerHTML = '<div style="text-align:center;color:var(--ink-2);padding:30px 0;font-size:17px;">' + msg + '</div>';
-  let advanced = false;
-  const go = () => { if (advanced) return; advanced = true; state.idx++; store.save(state); showItem(); };
-  speak(msg, () => setTimeout(go, 400));
-  // 保険：音声修正の直後などで TTS の onend が発火せず固まる端末があるため、
-  // 読み上げの成否に関わらず必ず次へ進める（従来はここで停止していた）。
-  setTimeout(go, 3200);
-}
-function finish() {
-  stage.classList.add("hidden"); outro.classList.remove("hidden"); pbar.style.width = "100%";
-  const ok = state.results.filter(r => r.sent).length;
-  $("sentStat").textContent = "送信済み: " + ok + " / " + state.results.length + " 件";
-  speak("確認、ありがとうございました。");
+  return html;
 }
 
-/* ---------- イベント ---------- */
-$("itemCount").textContent = REVIEW_ITEMS.length;
-$("startBtn").onclick = () => {
-  intro.classList.add("hidden"); stage.classList.remove("hidden");
-  if (state.idx >= REVIEW_ITEMS.length) return finish();
-  if (state.idx > 0) speak("おかえりなさい。続きから確認しましょう。");
-  showItem();
-};
-$("readBtn").onclick = () => speak(REVIEW_ITEMS[state.idx].text);
-$("approveBtn").onclick = async () => {
-  $("approveBtn").disabled = true;
-  const item = REVIEW_ITEMS[state.idx];
-  const ok = await send(item, "承認");
-  state.results.push({ id: item.id, decision: "承認", sent: ok }); store.save(state);
-  ackAndNext("ありがとうございます。");
-};
-$("reviseBtn").onclick = () => openRevise();
-$("cancelReviseBtn").onclick = () => {
-  closeRevise(); decide.classList.remove("hidden"); $("skipBtn").classList.remove("hidden");
-};
-micBtn.onclick = () => recording ? stopRec() : startRec();
-$("retryBtn").onclick = () => { transcript.value = ""; baseText = ""; hideActions(); startRec(); };
-$("sendReviseBtn").onclick = async () => {
-  const fb = dedupeText(transcript.value.trim()); if (!fb) return;
-  $("sendReviseBtn").disabled = true;
-  const item = REVIEW_ITEMS[state.idx];
-  const ok = await send(item, "修正・補足：" + fb);
-  state.results.push({ id: item.id, decision: "修正", sent: ok }); store.save(state);
-  $("sendReviseBtn").disabled = false;
-  ackAndNext("承知しました。直しておきます。");
-};
-$("skipBtn").onclick = async () => {
-  if (recording) stopRec();
-  const item = REVIEW_ITEMS[state.idx];
-  const ok = await send(item, "(あとで)");
-  state.results.push({ id: item.id, decision: "あとで", sent: ok }); store.save(state);
-  ackAndNext("では、あとで。");
-};
+const MIC_SVG = '<svg viewBox="0 0 24 24"><path d="M12 15a3.5 3.5 0 0 0 3.5-3.5v-6a3.5 3.5 0 1 0-7 0v6A3.5 3.5 0 0 0 12 15Zm6-3.5a6 6 0 0 1-12 0H4a8 8 0 0 0 7 7.94V22h2v-2.56A8 8 0 0 0 20 11.5h-2Z"/></svg>';
+
+function buildCard(item) {
+  const card = document.createElement("div");
+  card.className = "card"; card.id = "card-" + item.id;
+  card.innerHTML =
+    '<div class="itemhead">' +
+      '<span class="chbadge ' + item.ch + '">' + item.ch + '</span>' +
+      '<span class="itemlabel">' + esc(item.label) + '</span>' +
+      '<span class="chip" id="chip-' + item.id + '"></span>' +
+    '</div>' +
+    '<div class="postbody ' + (item.ch === "note" ? "note-art" : "") + '">' + postInnerHTML(item) + '</div>' +
+    '<div class="decide">' +
+      '<button class="dbtn ok"     data-act="ok">✅ これでOK</button>' +
+      '<button class="dbtn revise" data-act="revise">✏️ 直す・付け足す</button>' +
+      '<button class="dbtn later"  data-act="later">🕒 あとで</button>' +
+    '</div>' +
+    '<div class="revise-panel" id="rev-' + item.id + '">' +
+      '<p class="lead">直したいところ・付け足したいことを、声で話してください（キーボード入力も可）。</p>' +
+      '<div class="controls">' +
+        '<button class="mic" aria-label="話す" id="mic-' + item.id + '">' + MIC_SVG + '</button>' +
+        '<span class="mic-hint" id="hint-' + item.id + '">ボタンを押して話す</span>' +
+      '</div>' +
+      '<textarea class="transcript" id="ta-' + item.id + '" placeholder="ここに話した内容が文字になります（手で直してもOK）"></textarea>' +
+      '<div class="r-actions" id="acts-' + item.id + '" style="display:none;">' +
+        '<button class="btn" data-act="retry">録り直す</button>' +
+        '<button class="btn primary" data-act="send-revise">この修正を送る</button>' +
+      '</div>' +
+      '<button class="cancel-revise" data-act="cancel-revise">とじる</button>' +
+    '</div>';
+
+  const decideRow = card.querySelector(".decide");
+  const revPanel = card.querySelector("#rev-" + item.id);
+  const acts = card.querySelector("#acts-" + item.id);
+  const ta = card.querySelector("#ta-" + item.id);
+  const micBtn = card.querySelector("#mic-" + item.id);
+  const hint = card.querySelector("#hint-" + item.id);
+
+  // r-actions は .show クラスで表示
+  const actsWrap = acts;
+  const showA = () => actsWrap.style.display = "flex";
+  const hideA = () => actsWrap.style.display = "none";
+  // active 用に actions ラッパを差し替え（showActions/hideActions が参照）
+  const actionsProxy = { classList: { add: showA, remove: hideA } };
+
+  function focusHere() {
+    active = { id: item.id, ta, mic: micBtn, hint, actions: actionsProxy };
+  }
+  function openRevise() {
+    if (recording) stopRec();
+    revPanel.classList.add("show");
+    ta.value = ""; hideA(); focusHere(); setRecUI(false); recording = false;
+  }
+  function closeRevise() {
+    if (recording) stopRec();
+    revPanel.classList.remove("show"); hideA();
+    if (active && active.id === item.id) active = null;
+  }
+
+  decideRow.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".dbtn"); if (!btn) return;
+    const act = btn.dataset.act;
+    if (act === "revise") { openRevise(); return; }
+    // ok / later はその場で送信
+    closeRevise();
+    const decision = act === "ok" ? "承認" : "(あとで)";
+    await commit(item, act === "ok" ? "ok" : "later", decision);
+  });
+
+  micBtn.addEventListener("click", () => { focusHere(); recording ? stopRec() : startRec(); });
+  acts.addEventListener("click", (e) => {
+    const btn = e.target.closest(".btn"); if (!btn) return;
+    if (btn.dataset.act === "retry") { ta.value = ""; baseText = ""; focusHere(); hideA(); startRec(); }
+    if (btn.dataset.act === "send-revise") sendRevise();
+  });
+  revPanel.querySelector('[data-act="cancel-revise"]').addEventListener("click", closeRevise);
+
+  async function sendRevise() {
+    focusHere();
+    const fb = dedupeText(ta.value.trim()); if (!fb) { ta.focus(); return; }
+    const sendBtn = acts.querySelector('[data-act="send-revise"]');
+    sendBtn.disabled = true;
+    await commit(item, "rev", "修正・補足：" + fb, fb);
+    sendBtn.disabled = false;
+    closeRevise();
+  }
+
+  return card;
+}
+
+/* 判定の確定：送信 → 状態保存 → 見た目更新 */
+async function commit(item, kind, answer, detail) {
+  const sent = await send(item, answer);
+  state.decisions[item.id] = { kind, answer, detail: detail || "", sent };
+  store.save(state);
+  applyDecision(item.id);
+  updateSummary();
+}
+
+function applyDecision(id) {
+  const d = state.decisions[id];
+  const card = $("card-" + id), chip = $("chip-" + id);
+  const btns = card.querySelectorAll(".dbtn");
+  btns.forEach(b => b.classList.remove("sel"));
+  card.classList.remove("settled", "ok", "rev", "later");
+  chip.className = "chip";
+  if (!d) { chip.classList.remove("show"); return; }
+  const map = { ok: ["ok", "✅ 承認済み"], rev: ["rev", "✏️ 修正を送信"], later: ["later", "🕒 あとで"] };
+  const [cls, txt] = map[d.kind];
+  card.classList.add("settled", cls);
+  card.querySelector(".dbtn." + (d.kind === "rev" ? "revise" : d.kind)).classList.add("sel");
+  chip.classList.add("show", cls);
+  chip.innerHTML = esc(txt) + (d.sent ? "" : ' <span class="pending">（送信待ち）</span>');
+}
+
+function updateSummary() {
+  let ok=0, rev=0, later=0;
+  Object.values(state.decisions).forEach(d => { if (d.kind==="ok") ok++; else if (d.kind==="rev") rev++; else if (d.kind==="later") later++; });
+  const todo = REVIEW_ITEMS.length - (ok+rev+later);
+  $("cOk").textContent = ok; $("cRev").textContent = rev; $("cLater").textContent = later; $("cTodo").textContent = todo;
+  $("summary").classList.toggle("done", todo === 0);
+}
+
+/* 初期描画 */
+(function init(){
+  const list = $("list");
+  REVIEW_ITEMS.forEach(item => {
+    list.appendChild(buildCard(item));
+    if (state.decisions[item.id]) applyDecision(item.id);
+  });
+  updateSummary();
+})();
 </script>
 </body>
 </html>
