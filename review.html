@@ -167,7 +167,7 @@
   </section>
 
 </main>
-<footer>セットン韓国語教室 投稿確認｜v1</footer>
+<footer>セットン韓国語教室 投稿確認｜v1.1</footer>
 
 <script>
 const WEBHOOK = "https://hook.eu1.make.com/4m12kwd1q6kdug4m1e9mx7h5oqmg1ncp";
@@ -355,8 +355,12 @@ function closeRevise() {
 function ackAndNext(msg) {
   decide.classList.add("hidden"); $("skipBtn").classList.add("hidden"); closeRevise();
   postbody.classList.remove("note-art"); postbody.innerHTML = '<div style="text-align:center;color:var(--ink-2);padding:30px 0;font-size:17px;">' + msg + '</div>';
-  speak(msg, () => setTimeout(() => { state.idx++; store.save(state); showItem(); }, 400));
-  if (!("speechSynthesis" in window)) setTimeout(() => { state.idx++; store.save(state); showItem(); }, 900);
+  let advanced = false;
+  const go = () => { if (advanced) return; advanced = true; state.idx++; store.save(state); showItem(); };
+  speak(msg, () => setTimeout(go, 400));
+  // 保険：音声修正の直後などで TTS の onend が発火せず固まる端末があるため、
+  // 読み上げの成否に関わらず必ず次へ進める（従来はここで停止していた）。
+  setTimeout(go, 3200);
 }
 function finish() {
   stage.classList.add("hidden"); outro.classList.remove("hidden"); pbar.style.width = "100%";
